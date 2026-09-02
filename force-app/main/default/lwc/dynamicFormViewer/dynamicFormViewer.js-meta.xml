@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property
+                name="sourceMode"
+                type="String"
+                label="Render Source"
+                description="How to read the JSON. 'fmtData' renders OmniScript's display-formatted answer set (OmniScriptFmtData) - only the form fields the user saw. 'raw' renders the raw payload tree (filtered by the header blocklist / Root Path / Exclude Keys). Falls back to raw if OmniScriptFmtData is missing."
+                default="fmtData"
+                datasource="fmtData,raw"
+            />
+            <property
+                name="jsonFieldName"
+                type="String"
+                label="JSON Field API Name"
+                description="API name of the field on this record holding the application form JSON (e.g. Application_Form_JSON__c)."
+                default="Application_Form_JSON__c"
+            />
+            <property
+                name="rootPath"
+                type="String"
+                label="Root Path (optional)"
+                description="Dotted path to render from, e.g. PersonalDetails. Leave blank to render the whole payload (with the OmniScript header filtered out)."
+            />
+            <property
+                name="excludeKeys"
+                type="String"
+                label="Exclude Keys (optional)"
+                description="Comma-separated extra top-level keys to hide, in addition to the known OmniScript header keys."
+            />
+            <property
+                name="includeScalarSections"
+                type="Boolean"
+                label="Include top-level simple fields"
+                description="By default only object/list sections are shown (this hides the OmniScript metadata). Turn on to also show plain top-level fields."
+                default="false"
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

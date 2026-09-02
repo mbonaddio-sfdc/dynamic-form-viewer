@@ -1,0 +1,24 @@
+.nav-container {
+    border-right: 1px solid #dddbda; /* SLDS border color */
+}
+
+.content-container {
+}
+
+/* Style for the read-only form fields */
+.slds-form-element__control.slds-box {
+    background-color: #fcfcfc; /* Slightly off-white, less stark */
+    min-height: 2.5rem; /* Increased height slightly to prevent text cutoff */
+    padding: 0.5rem 0.75rem;
+    word-wrap: break-word;
+    
+    /* Explicitly define border to ensure it doesn't look cut off */
+    border: 1px solid #dddbda; 
+}
+
+.slds-form-element__label {
+    font-weight: bold;
+    color: #3e3e3c; /* SLDS label color */
+}
+
+/* Field-level styling now lives in the dynamicFieldRenderer child. */

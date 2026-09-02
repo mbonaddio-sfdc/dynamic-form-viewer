@@ -1,0 +1,36 @@
+/* Leaf value boxes */
+.slds-form-element__control.slds-box {
+    background-color: #fcfcfc;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    word-wrap: break-word;
+    border: 1px solid #dddbda;
+}
+
+.slds-form-element__label {
+    font-weight: bold;
+    color: #3e3e3c;
+}
+
+/* Give nested tabsets a little breathing room so a tabset inside a tab
+   reads as a distinct group rather than butting against its parent's chrome. */
+lightning-tabset {
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* File-upload chips: icon + filename + size + download on one line. */
+.dfr-file-row {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0;
+}
+
+.dfr-file-name {
+    font-weight: 600;
+}
+
+.dfr-file-download {
+    display: inline-flex;
+    align-items: center;
+}

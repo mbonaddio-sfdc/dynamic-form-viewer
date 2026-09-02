@@ -1,0 +1,181 @@
+<template>
+    <!-- CONTAINER NODES render as a nested tabset. -->
+    <template lwc:if={isContainer}>
+        <!-- Object: Details tab (leaf fields) + one tab per complex child. -->
+        <template lwc:if={isObject}>
+            <template lwc:if={isEmptyContainer}>
+                <div class="slds-text-color_weak slds-p-around_x-small">
+                    (no fields)
+                </div>
+            </template>
+            <template lwc:else>
+                <lightning-tabset variant="scoped">
+                    <template lwc:if={hasObjectDetails}>
+                        <lightning-tab label="Details">
+                            <template
+                                for:each={objectDetailFields}
+                                for:item="child"
+                            >
+                                <c-dynamic-field-renderer
+                                    key={child.key}
+                                    node={child}
+                                    depth={childDepth}
+                                ></c-dynamic-field-renderer>
+                            </template>
+                        </lightning-tab>
+                    </template>
+                    <template
+                        for:each={objectComplexTabs}
+                        for:item="tab"
+                    >
+                        <lightning-tab key={tab.key} label={tab.label}>
+                            <c-dynamic-field-renderer
+                                node={tab.node}
+                                depth={childDepth}
+                            ></c-dynamic-field-renderer>
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset>
+            </template>
+        </template>
+
+        <!-- Array of objects: one tab per item. -->
+        <template lwc:elseif={isArrayOfObjects}>
+            <template lwc:if={isEmptyContainer}>
+                <div class="slds-text-color_weak slds-p-around_x-small">
+                    (no items)
+                </div>
+            </template>
+            <template lwc:else>
+                <lightning-tabset variant="scoped">
+                    <template for:each={arrayItemTabs} for:item="item">
+                        <lightning-tab key={item.key} label={item.title}>
+                            <template
+                                for:each={item.detailFields}
+                                for:item="child"
+                            >
+                                <c-dynamic-field-renderer
+                                    key={child.key}
+                                    node={child}
+                                    depth={childDepth}
+                                ></c-dynamic-field-renderer>
+                            </template>
+                            <template
+                                for:each={item.complexTabs}
+                                for:item="tab"
+                            >
+                                <c-dynamic-field-renderer
+                                    key={tab.key}
+                                    node={tab.node}
+                                    depth={childDepth}
+                                ></c-dynamic-field-renderer>
+                            </template>
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset>
+            </template>
+        </template>
+    </template>
+
+    <!-- LEAF NODES render as a labelled value block. -->
+    <template lwc:else>
+        <div class="slds-form-element slds-m-bottom_small">
+            <span class="slds-form-element__label">{node.label}</span>
+            <div
+                class="slds-form-element__control slds-box slds-box_small slds-theme_shade"
+            >
+                <template lwc:if={isPrimitive}>
+                    <lightning-formatted-text
+                        value={node.displayValue}
+                    ></lightning-formatted-text>
+                </template>
+
+                <template lwc:elseif={isBoolean}>
+                    {node.displayValue}
+                </template>
+
+                <template lwc:elseif={isDate}>
+                    <lightning-formatted-date-time
+                        value={node.value}
+                        year="numeric"
+                        month="long"
+                        day="2-digit"
+                        hour="2-digit"
+                        minute="2-digit"
+                    ></lightning-formatted-date-time>
+                </template>
+
+                <template lwc:elseif={isSimpleArray}>
+                    <template lwc:if={node.hasItems}>
+                        <ul class="slds-list_dotted slds-p-left_medium">
+                            <template for:each={node.items} for:item="item">
+                                <li key={item.key}>{item.value}</li>
+                            </template>
+                        </ul>
+                    </template>
+                    <!-- empty array: render blank, not a placeholder -->
+                </template>
+
+                <template lwc:elseif={isFile}>
+                    <ul class="slds-list_vertical slds-has-dividers_around-space">
+                        <template for:each={node.files} for:item="file">
+                            <li
+                                key={file.key}
+                                class="slds-item dfr-file-row"
+                            >
+                                <lightning-icon
+                                    icon-name="doctype:attachment"
+                                    size="small"
+                                    class="slds-m-right_x-small"
+                                ></lightning-icon>
+                                <!-- Previewable file: filename opens preview modal -->
+                                <template lwc:if={file.canPreview}>
+                                    <a
+                                        href="#"
+                                        data-document-id={file.documentId}
+                                        onclick={handlePreview}
+                                        class="dfr-file-name"
+                                        >{file.filename}</a
+                                    >
+                                </template>
+                                <!-- No 069 id: filename is a plain download link -->
+                                <template lwc:else>
+                                    <a
+                                        href={file.downloadUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="dfr-file-name"
+                                        >{file.filename}</a
+                                    >
+                                </template>
+
+                                <span
+                                    lwc:if={file.sizeLabel}
+                                    class="slds-text-body_small slds-text-color_weak slds-m-left_x-small"
+                                    >{file.sizeLabel}</span
+                                >
+
+                                <a
+                                    lwc:if={file.downloadUrl}
+                                    href={file.downloadUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="Download"
+                                    class="slds-m-left_x-small dfr-file-download"
+                                >
+                                    <lightning-icon
+                                        icon-name="utility:download"
+                                        size="xx-small"
+                                        alternative-text="Download"
+                                    ></lightning-icon>
+                                </a>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+
+                <!-- empty leaf: render a blank control, no "N/A" text -->
+            </div>
+        </div>
+    </template>
+</template>
